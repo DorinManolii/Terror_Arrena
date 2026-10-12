@@ -1,0 +1,16 @@
+# Generate de Unreal - nu intra niciodata in Git
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# Plugins (daca adaugi pe viitor)
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+# IDE / Mac
+.idea/
+.vs/
+*.xcworkspace
+*.xcodeproj
+.DS_Store
