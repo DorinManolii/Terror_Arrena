@@ -39,7 +39,7 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 			
-			FVector SpawnLocation = FVector(0.0f, 0.0f, 500.0f);
+			FVector SpawnLocation = FVector(0.0f, 0.0f, 250.0f);
 			
 			FRotator SpawnRotation = FRotator::ZeroRotator;
 			

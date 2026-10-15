@@ -3,11 +3,15 @@
 
 #include "EnemiesBaseClass.h"
 
+#include "AC_TerrorArena_AIController.h"
+
 // Sets default values
 AEnemiesBaseClass::AEnemiesBaseClass()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	AIControllerClass = AAC_TerrorArena_AIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 }
 
