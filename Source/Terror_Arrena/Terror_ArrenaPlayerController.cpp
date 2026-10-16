@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Terror_ArrenaPlayerController.h"
+
+#include "EnemiesBaseClass.h"
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
@@ -13,6 +15,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "Terror_Arrena.h"
+#include "Kismet/GameplayStatics.h"
+
 
 ATerror_ArrenaPlayerController::ATerror_ArrenaPlayerController()
 {
@@ -51,12 +55,13 @@ void ATerror_ArrenaPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &ATerror_ArrenaPlayerController::OnSetDestinationTriggered);
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &ATerror_ArrenaPlayerController::OnSetDestinationReleased);
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &ATerror_ArrenaPlayerController::OnSetDestinationReleased);
-
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ATerror_ArrenaPlayerController::OnFire);
 			// Setup touch input events
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &ATerror_ArrenaPlayerController::OnInputStarted);
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &ATerror_ArrenaPlayerController::OnTouchTriggered);
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &ATerror_ArrenaPlayerController::OnTouchReleased);
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &ATerror_ArrenaPlayerController::OnTouchReleased);
+			
 		}
 		else
 		{
@@ -136,3 +141,30 @@ void ATerror_ArrenaPlayerController::UpdateCachedDestination()
 		CachedDestination = Hit.Location;
 	}
 }
+
+void ATerror_ArrenaPlayerController::OnFire()
+{
+	FVector ActorLocation = GetPawn()->GetActorLocation();
+	FVector ActorForwardVector = GetPawn()->GetActorForwardVector();
+	
+	FVector Start = ActorLocation + (ActorForwardVector * 100.f);
+	FVector End = Start + (ActorForwardVector * 1000.f);
+	
+	FHitResult Hit;
+	
+	GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Camera);
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1.0f);
+	
+	AActor* TargetActor = Hit.GetActor();
+	AActor* ControlledPawn = GetPawn();
+
+	
+	if (TargetActor)
+	{
+		
+		UGameplayStatics::ApplyDamage(TargetActor ,100.f, this, ControlledPawn, UDamageType::StaticClass());
+	
+	}
+	
+}	
+

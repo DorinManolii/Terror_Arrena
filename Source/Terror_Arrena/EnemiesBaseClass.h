@@ -14,16 +14,23 @@ class TERROR_ARRENA_API AEnemiesBaseClass : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AEnemiesBaseClass();
-
-protected:
-	// Called when the game starts or when spawned
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	float Health = 100.f;
+	
 	virtual void BeginPlay() override;
-
-public:	
+	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	
+	
+protected:
+	// Called when the game starts or when spawned
+	void Die();
 };

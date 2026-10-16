@@ -19,10 +19,28 @@ AEnemiesBaseClass::AEnemiesBaseClass()
 void AEnemiesBaseClass::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+float AEnemiesBaseClass::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TakeDamage called, HP before: %f"), Health);
+	float ActualDamage = Super::TakeDamage(DamageAmount,DamageEvent,EventInstigator,DamageCauser);
+	Health = Health - ActualDamage;
+	if (Health <= 0.0f)
+	{
+		Die();
+	}
+	return ActualDamage;
 	
 }
 
+void AEnemiesBaseClass::Die()
+{
+	Destroy();
+}
+
 // Called every frame
+
 void AEnemiesBaseClass::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
