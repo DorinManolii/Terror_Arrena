@@ -11,7 +11,7 @@ ATerror_ArrenaGameMode::ATerror_ArrenaGameMode()
 void ATerror_ArrenaGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("GameMode BeginPlay called"));
+	
 	StartWave();
 	
 	SpawnEnemy();

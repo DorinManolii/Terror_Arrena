@@ -31,7 +31,7 @@ public:
 
 	/** Constructor */
 	ATerror_ArrenaCharacter();
-
+	
 	/** Initialization */
 	virtual void BeginPlay() override;
 
