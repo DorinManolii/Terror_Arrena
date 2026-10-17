@@ -35,6 +35,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnEnemy();
 	
+	UPROPERTY(BlueprintReadOnly)
+	TArray<AEnemiesBaseClass*> Enemies;
+	
+	UFUNCTION()
+	void OnEnemyDied(AEnemiesBaseClass* DeadEnemy);
+	
 	
 };
 
