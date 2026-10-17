@@ -14,9 +14,13 @@ class TERROR_ARRENA_API AAC_TerrorArena_AIController : public AAIController
 {
 	GENERATED_BODY()
 	public:
+	
 	virtual void BeginPlay() override;
 	
 	void StartChasing();
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float DistanceToChasing;
 };
 
 

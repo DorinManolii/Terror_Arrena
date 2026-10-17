@@ -38,7 +38,6 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<AEnemiesBaseClass*> Enemies;
 	
-	UFUNCTION()
 	void OnEnemyDied(AEnemiesBaseClass* DeadEnemy);
 	
 	

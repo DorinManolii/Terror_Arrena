@@ -14,11 +14,9 @@ class TERROR_ARRENA_API AGameStateTerrorArena : public AGameStateBase
 {
 	GENERATED_BODY()
 	
-	virtual void BeginPlay() override;
+	public:
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	public:
 	
 	UPROPERTY(BlueprintReadOnly,Replicated)
 	int32 CurrentWave = 0;

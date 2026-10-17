@@ -12,14 +12,4 @@ void AGameStateTerrorArena::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME(AGameStateTerrorArena, RemainingEnemies);
 }
 
-void AGameStateTerrorArena::BeginPlay()
-{
-	Super::BeginPlay();
-		
-	AGameStateBase* GS = GetWorld()->GetGameState<AGameStateBase>();
-	if (GS)
-	{
-		
-	}
-}
 	
