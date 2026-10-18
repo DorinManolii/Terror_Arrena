@@ -69,6 +69,16 @@ public:
 
 	/** Constructor */
 	ATerror_ArrenaPlayerController();
+	
+	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite);
+	TSubclassOf<UUserWidget> MainWidgetClass;
+	
+	void CreateMainWidget();
+	
+	UFUNCTION(Server, Reliable)
+	void ServerFire();
 
 protected:
 

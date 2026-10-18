@@ -14,8 +14,14 @@ void ATerror_ArrenaGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	StartWave();
-
+	AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
+	if (GS)
+	{
+		GS->RemainingEnemies = EnemiesPerWave;
+		GS->OnRep_RemainingEnemies();
+	}
 	SpawnEnemy();
+	
 }
 
 void ATerror_ArrenaGameMode::StartWave()
@@ -25,6 +31,7 @@ void ATerror_ArrenaGameMode::StartWave()
 	{
 		GS->CurrentWave++;
 		GS->RemainingEnemies = EnemiesPerWave * GS->CurrentWave;
+		GS->OnRep_RemainingEnemies();
 	}
 }
 
@@ -40,7 +47,7 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride =
-				ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
 
 
 			for (int i = 0; i < GS->RemainingEnemies; ++i)
@@ -51,7 +58,7 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 					NavSys->GetRandomReachablePointInRadius(FVector::ZeroVector, 3000.f, RandomPoint);
 
 					FVector SpawnLocation = RandomPoint.Location;
-					SpawnLocation.Z = 100.f;
+					SpawnLocation.Z = 200.f;
 
 					FRotator SpawnRotation = FRotator::ZeroRotator;
 
@@ -78,6 +85,7 @@ void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 	if (GS)
 	{
 		GS->RemainingEnemies = Enemies.Num();
+		GS->OnRep_RemainingEnemies();
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow,
 		                                 FString::Printf(TEXT("Remaining enemies: %d"), GS->RemainingEnemies));

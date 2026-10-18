@@ -16,7 +16,19 @@
 #include "Engine/LocalPlayer.h"
 #include "Terror_Arrena.h"
 #include "WeaponComponent.h"
+#include "Blueprint/UserWidget.h"
 
+void ATerror_ArrenaPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (IsLocalPlayerController())
+	{
+		CreateMainWidget();
+	}
+	
+	
+}
 
 ATerror_ArrenaPlayerController::ATerror_ArrenaPlayerController()
 {
@@ -160,8 +172,21 @@ void ATerror_ArrenaPlayerController::UpdateCachedDestination()
 
 void ATerror_ArrenaPlayerController::OnFire()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("OnFire called"));
+	ServerFire();
+}
+
+void ATerror_ArrenaPlayerController::CreateMainWidget()
+{
+	UUserWidget* MainWidget = CreateWidget<UUserWidget>(this,MainWidgetClass);
 	
+	if (MainWidget)
+	{
+		MainWidget->AddToViewport();
+	}
+}
+
+void ATerror_ArrenaPlayerController::ServerFire_Implementation()
+{
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn)
 	{
