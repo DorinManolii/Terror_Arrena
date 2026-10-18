@@ -34,15 +34,15 @@ public:
 	
 	/** Initialization */
 	virtual void BeginPlay() override;
-
-	/** Update */
-	virtual void Tick(float DeltaSeconds) override;
-
+	
 	/** Returns the camera component **/
 	UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent.Get(); }
 
 	/** Returns the Camera Boom component **/
 	USpringArmComponent* GetCameraBoom() const { return CameraBoom.Get(); }
+	
+	UFUNCTION()
+	void HandleDeath();
 
 };
 

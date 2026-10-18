@@ -29,7 +29,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnDeath OnDeath;
 	
-	UPROPERTY(EditDefaultsOnly);
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly);
 	float MaxHealth = 100.0f;
 
 	UFUNCTION()

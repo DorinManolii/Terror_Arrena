@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Terror_ArrenaCharacter.h"
+
+#include "HealthComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -51,12 +53,15 @@ void ATerror_ArrenaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// stub
+	UHealthComponent* HealthComp = FindComponentByClass<UHealthComponent>();
+	if (HealthComp)
+	{
+		HealthComp->OnDeath.AddDynamic(this, &ATerror_ArrenaCharacter::HandleDeath);
+	}
 }
 
-void ATerror_ArrenaCharacter::Tick(float DeltaSeconds)
+void ATerror_ArrenaCharacter::HandleDeath()
 {
-    Super::Tick(DeltaSeconds);
-
-	// stub
+	GetController()->UnPossess();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Player Death"));
 }
