@@ -18,6 +18,8 @@ class TERROR_ARRENA_API AAC_TerrorArena_AIController : public AAIController
 	
 	virtual void BeginPlay() override;
 	
+	FTimerHandle CanFireTimerHandle;
+	
 	void StartChasing();
 	
 };

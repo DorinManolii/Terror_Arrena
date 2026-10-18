@@ -22,6 +22,12 @@ public:
 	UPROPERTY(EditAnywhere, Category="Weapon");
 	TObjectPtr<UWeaponDataAsset> WeaponAsset;
 	
+	bool bCanFire = true;
+	
+	FTimerHandle CanFireTimerHandler;
+	
+	void CanFire();
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
