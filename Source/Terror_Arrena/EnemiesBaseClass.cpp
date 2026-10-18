@@ -4,6 +4,7 @@
 #include "EnemiesBaseClass.h"
 
 #include "AC_TerrorArena_AIController.h"
+#include "HealthComponent.h"
 #include "Terror_ArrenaGameMode.h"
 
 // Sets default values
@@ -13,47 +14,27 @@ AEnemiesBaseClass::AEnemiesBaseClass()
 	PrimaryActorTick.bCanEverTick = true;
 	AIControllerClass = AAC_TerrorArena_AIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
 }
 
 // Called when the game starts or when spawned
 void AEnemiesBaseClass::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-float AEnemiesBaseClass::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-                                    class AController* EventInstigator, AActor* DamageCauser)
-{
 	
-	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
-	Health = Health - ActualDamage;
-	
-	if (Health <= 0.0f)
+	UHealthComponent* HealthComp = FindComponentByClass<UHealthComponent>();
+	if (HealthComp)
 	{
-		Die();
+		HealthComp->OnDeath.AddDynamic(this, &AEnemiesBaseClass::Die);
 	}
-	return ActualDamage;
 }
 
 void AEnemiesBaseClass::Die()
 {
 	ATerror_ArrenaGameMode* MyGm = Cast<ATerror_ArrenaGameMode>(GetWorld()->GetAuthGameMode());
-	
+
 	MyGm->OnEnemyDied(this);
 
 	Destroy();
 }
 
-// Called every frame
-
-void AEnemiesBaseClass::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void AEnemiesBaseClass::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
