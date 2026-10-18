@@ -1,8 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Terror_ArrenaGameMode.h"
-
+#include "NavigationSystem.h"
 #include "GameStateTerrorArena.h"
+
 
 ATerror_ArrenaGameMode::ATerror_ArrenaGameMode()
 {
@@ -31,6 +32,9 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 {
 	if (EnemiesClass)
 	{
+		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+
+
 		AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
 		if (GS)
 		{
@@ -38,19 +42,28 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 			SpawnParams.SpawnCollisionHandlingOverride =
 				ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			FVector SpawnLocation = FVector(0.0f, 0.0f, 250.0f);
-
-			FRotator SpawnRotation = FRotator::ZeroRotator;
-
-			FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
 
 			for (int i = 0; i < GS->RemainingEnemies; ++i)
 			{
-				AEnemiesBaseClass* SpawnedEnemy = GetWorld()->SpawnActor<AEnemiesBaseClass>(
-					EnemiesClass, SpawnTransform, SpawnParams);
-				if (SpawnedEnemy)
+				if (NavSys)
 				{
-					Enemies.Add(SpawnedEnemy);
+					FNavLocation RandomPoint;
+					NavSys->GetRandomReachablePointInRadius(FVector::ZeroVector, 3000.f, RandomPoint);
+
+					FVector SpawnLocation = RandomPoint.Location;
+					SpawnLocation.Z = 100.f;
+
+					FRotator SpawnRotation = FRotator::ZeroRotator;
+
+
+					FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
+
+					AEnemiesBaseClass* SpawnedEnemy = GetWorld()->SpawnActor<AEnemiesBaseClass>(
+						EnemiesClass, SpawnTransform, SpawnParams);
+					if (SpawnedEnemy)
+					{
+						Enemies.Add(SpawnedEnemy);
+					}
 				}
 			}
 		}
@@ -59,16 +72,15 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 
 void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 {
-	
 	Enemies.Remove(DeadEnemy);
-	
+
 	AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
 	if (GS)
 	{
 		GS->RemainingEnemies = Enemies.Num();
-		
+
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow,
-										 FString::Printf(TEXT("Remaining enemies: %d"), GS->RemainingEnemies));
+		                                 FString::Printf(TEXT("Remaining enemies: %d"), GS->RemainingEnemies));
 		if (GS->RemainingEnemies == 0)
 		{
 			StartWave();
