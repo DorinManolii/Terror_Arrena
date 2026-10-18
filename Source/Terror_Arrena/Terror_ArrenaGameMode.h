@@ -29,10 +29,8 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<AEnemiesBaseClass> EnemiesClass;
 	
-	UFUNCTION(BlueprintCallable)
 	void StartWave();
 	
-	UFUNCTION(BlueprintCallable)
 	void SpawnEnemy();
 	
 	UPROPERTY(BlueprintReadOnly)

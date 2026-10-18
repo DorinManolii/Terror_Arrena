@@ -11,6 +11,7 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRemainingEnemiesChanged, int32, NewCount);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaveChanged, int32, NewWave);
 
 
 UCLASS()
@@ -27,7 +28,10 @@ class TERROR_ARRENA_API AGameStateTerrorArena : public AGameStateBase
 	UPROPERTY(BlueprintAssignable)
 	FOnRemainingEnemiesChanged OnRemainingEnemiesChanged;
 	
-	UPROPERTY(BlueprintReadOnly,Replicated)
+	UPROPERTY(BlueprintAssignable)
+	FOnWaveChanged OnWaveChanged;
+	
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing=OnRep_WaveChanged)
 	int32 CurrentWave = 0;
 	
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing=OnRep_RemainingEnemies)
@@ -35,4 +39,7 @@ class TERROR_ARRENA_API AGameStateTerrorArena : public AGameStateBase
 	
 	UFUNCTION()
 	void OnRep_RemainingEnemies();
+	
+	UFUNCTION()
+	void OnRep_WaveChanged();
 };

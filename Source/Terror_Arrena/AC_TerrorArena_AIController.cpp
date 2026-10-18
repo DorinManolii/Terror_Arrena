@@ -4,38 +4,44 @@
 #include "AC_TerrorArena_AIController.h"
 
 #include "EnemiesBaseClass.h"
+#include "WeaponComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void AAC_TerrorArena_AIController::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Start Chasing"));
-	
+
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AAC_TerrorArena_AIController::StartChasing, 2.0f, true);
-
-	
 }
 
 void AAC_TerrorArena_AIController::StartChasing()
 {
-	
 	APawn* PlayerPawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (PlayerPawn)
 	{
-		
-		APawn* ControlledPawn= GetPawn();
+		APawn* ControlledPawn = GetPawn();
 		if (ControlledPawn)
 		{
-			float Distance = ControlledPawn->GetDistanceTo(PlayerPawn);
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Distance: %f"), Distance));
-			if (Distance >= DistanceToChasing)
+			UWeaponComponent* Weapon = GetPawn()->FindComponentByClass<UWeaponComponent>();
+			if (Weapon)
 			{
-				MoveToActor(PlayerPawn);
-				EPathFollowingRequestResult::Type Result = MoveToActor(PlayerPawn);
+				if (Weapon->WeaponAsset)
+				{
+					float Distance = ControlledPawn->GetDistanceTo(PlayerPawn);
+
+					if (Distance >= Weapon->WeaponAsset->Range)
+					{
+						MoveToActor(PlayerPawn);
+						EPathFollowingRequestResult::Type Result = MoveToActor(
+							PlayerPawn, Weapon->WeaponAsset->Range - 50.f);
+					}
+					else
+					{
+						Weapon->Fire();
+					}
+				}
 			}
 		}
-
 	}
 }

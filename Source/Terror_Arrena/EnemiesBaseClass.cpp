@@ -24,9 +24,11 @@ void AEnemiesBaseClass::BeginPlay()
 float AEnemiesBaseClass::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
                                     class AController* EventInstigator, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TakeDamage called, HP before: %f"), Health);
+	
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
 	Health = Health - ActualDamage;
+	
 	if (Health <= 0.0f)
 	{
 		Die();

@@ -26,23 +26,26 @@ void UWeaponComponent::Fire()
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (OwnerPawn)
 	{
-		FVector ActorLocation = OwnerPawn->GetActorLocation();
-		FVector ActorForwardVector = OwnerPawn->GetActorForwardVector();
-
-		FVector Start = ActorLocation + (ActorForwardVector * 100.f);
-		FVector End = Start + (ActorForwardVector * 1000.f);
-
-		FHitResult Hit;
-
-		GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Camera);
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1.0f);
-
-		AActor* TargetActor = Hit.GetActor();
-
-		if (TargetActor)
+		if (WeaponAsset)
 		{
-			UGameplayStatics::ApplyDamage(TargetActor, 100.f, OwnerPawn->GetController(), OwnerPawn,
-			                              UDamageType::StaticClass());
+			FVector ActorLocation = OwnerPawn->GetActorLocation();
+			FVector ActorForwardVector = OwnerPawn->GetActorForwardVector();
+
+			FVector Start = ActorLocation + (ActorForwardVector * 100.f);
+			FVector End = Start + (ActorForwardVector * WeaponAsset->Range);
+
+			FHitResult Hit;
+
+			GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Camera);
+			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1.0f);
+
+			AActor* TargetActor = Hit.GetActor();
+
+			if (TargetActor)
+			{
+				UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage, OwnerPawn->GetController(), OwnerPawn,
+				                              UDamageType::StaticClass());
+			}
 		}
 	}
 }

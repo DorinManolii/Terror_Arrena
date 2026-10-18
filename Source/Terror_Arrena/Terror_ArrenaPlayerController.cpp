@@ -15,19 +15,18 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "Terror_Arrena.h"
+#include "Terror_ArrenaGameMode.h"
 #include "WeaponComponent.h"
 #include "Blueprint/UserWidget.h"
 
 void ATerror_ArrenaPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (IsLocalPlayerController())
 	{
 		CreateMainWidget();
 	}
-	
-	
 }
 
 ATerror_ArrenaPlayerController::ATerror_ArrenaPlayerController()
@@ -74,6 +73,8 @@ void ATerror_ArrenaPlayerController::SetupInputComponent()
 			                                   &ATerror_ArrenaPlayerController::OnSetDestinationReleased);
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnFire);
+			EnhancedInputComponent->BindAction(ActionButton, ETriggerEvent::Started, this,
+			                                   &ATerror_ArrenaPlayerController::OnActionButton);
 			// Setup touch input events
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnInputStarted);
@@ -126,9 +127,9 @@ void ATerror_ArrenaPlayerController::OnSetDestinationReleased()
 	{
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		
+
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination,
-		                                               FRotator::ZeroRotator,FVector(1.f, 1.f, 1.f), true,
+		                                               FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true,
 		                                               true, ENCPoolMethod::None, true);
 	}
 
@@ -175,10 +176,30 @@ void ATerror_ArrenaPlayerController::OnFire()
 	ServerFire();
 }
 
+void ATerror_ArrenaPlayerController::OnActionButton()
+{
+	ATerror_ArrenaGameMode* MyGM = Cast<ATerror_ArrenaGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (MyGM)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gm ready"));
+		int32 EnemiesAmount = MyGM->Enemies.Num();
+
+		for (int32 i = EnemiesAmount - 1; i >= 0 ; i--)
+		{
+			AEnemiesBaseClass* Enemy = MyGM->Enemies[i];
+			if (Enemy)
+			{
+				Enemy->Die();
+			}
+		}
+	}
+}
+
 void ATerror_ArrenaPlayerController::CreateMainWidget()
 {
-	UUserWidget* MainWidget = CreateWidget<UUserWidget>(this,MainWidgetClass);
-	
+	UUserWidget* MainWidget = CreateWidget<UUserWidget>(this, MainWidgetClass);
+
 	if (MainWidget)
 	{
 		MainWidget->AddToViewport();

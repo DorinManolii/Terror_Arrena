@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponDataAsset.h"
 #include "Components/ActorComponent.h"
 #include "WeaponComponent.generated.h"
 
@@ -17,6 +18,9 @@ public:
 	UWeaponComponent();
 
 	void Fire();
+	
+	UPROPERTY(EditAnywhere, Category="Weapon");
+	TObjectPtr<UWeaponDataAsset> WeaponAsset;
 	
 protected:
 	// Called when the game starts

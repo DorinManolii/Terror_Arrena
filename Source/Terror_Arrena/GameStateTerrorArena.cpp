@@ -2,6 +2,8 @@
 
 
 #include "GameStateTerrorArena.h"
+
+#include "AudioDeviceManager.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -19,4 +21,8 @@ void AGameStateTerrorArena::OnRep_RemainingEnemies()
 	
 }
 
+void AGameStateTerrorArena::OnRep_WaveChanged()
+{
+	OnWaveChanged.Broadcast(CurrentWave);
+}
 	

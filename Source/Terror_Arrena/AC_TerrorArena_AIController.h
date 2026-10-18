@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "WeaponDataAsset.h"
 #include "AC_TerrorArena_AIController.generated.h"
 
 /**
@@ -19,8 +20,6 @@ class TERROR_ARRENA_API AAC_TerrorArena_AIController : public AAIController
 	
 	void StartChasing();
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float DistanceToChasing;
 };
 
 

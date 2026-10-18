@@ -22,7 +22,8 @@ UCLASS(abstract)
 class ATerror_ArrenaPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-
+	
+	virtual void BeginPlay() override;
 protected:
 
 	/** Component used for moving along a NavMesh path. */
@@ -53,6 +54,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	TObjectPtr<UInputAction> FireAction;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<UInputAction> ActionButton;
+	
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
@@ -64,13 +68,15 @@ protected:
 
 	/** Time that the click input has been pressed */
 	float FollowTime = 0.0f;
+	
 
+	
 public:
 
 	/** Constructor */
 	ATerror_ArrenaPlayerController();
 	
-	virtual void BeginPlay() override;
+	
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite);
 	TSubclassOf<UUserWidget> MainWidgetClass;
@@ -92,6 +98,7 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 	void OnFire();
+	void OnActionButton();
 
 	/** Helper function to get the move destination */
 	void UpdateCachedDestination();

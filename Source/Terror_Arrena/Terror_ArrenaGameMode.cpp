@@ -32,6 +32,7 @@ void ATerror_ArrenaGameMode::StartWave()
 		GS->CurrentWave++;
 		GS->RemainingEnemies = EnemiesPerWave * GS->CurrentWave;
 		GS->OnRep_RemainingEnemies();
+		GS->OnRep_WaveChanged();
 	}
 }
 
@@ -86,13 +87,12 @@ void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 	{
 		GS->RemainingEnemies = Enemies.Num();
 		GS->OnRep_RemainingEnemies();
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow,
-		                                 FString::Printf(TEXT("Remaining enemies: %d"), GS->RemainingEnemies));
+		
 		if (GS->RemainingEnemies == 0)
 		{
 			StartWave();
 			SpawnEnemy();
+			
 		}
 	}
 }
