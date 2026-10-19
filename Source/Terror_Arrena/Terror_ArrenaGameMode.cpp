@@ -12,13 +12,15 @@ ATerror_ArrenaGameMode::ATerror_ArrenaGameMode()
 void ATerror_ArrenaGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	MyGS = GetGameState<AGameStateTerrorArena>();
+	
 	StartWave();
-	AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
-	if (GS)
+	
+	if (MyGS)
 	{
-		GS->RemainingEnemies = EnemiesPerWave;
-		GS->OnRep_RemainingEnemies();
+		MyGS->RemainingEnemies = EnemiesPerWave;
+		MyGS->OnRep_RemainingEnemies();
 	}
 	SpawnEnemy();
 	
@@ -26,13 +28,12 @@ void ATerror_ArrenaGameMode::BeginPlay()
 
 void ATerror_ArrenaGameMode::StartWave()
 {
-	AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
-	if (GS)
+	if (MyGS)
 	{
-		GS->CurrentWave++;
-		GS->RemainingEnemies = EnemiesPerWave * GS->CurrentWave;
-		GS->OnRep_RemainingEnemies();
-		GS->OnRep_WaveChanged();
+		MyGS->CurrentWave++;
+		MyGS->RemainingEnemies = EnemiesPerWave * MyGS->CurrentWave;
+		MyGS->OnRep_RemainingEnemies();
+		MyGS->OnRep_WaveChanged();
 	}
 }
 
@@ -41,17 +42,15 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 	if (EnemiesClass)
 	{
 		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
-
-
-		AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
-		if (GS)
+		
+		if (MyGS)
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride =
 				ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
 
 
-			for (int i = 0; i < GS->RemainingEnemies; ++i)
+			for (int i = 0; i < MyGS->RemainingEnemies; ++i)
 			{
 				if (NavSys)
 				{
@@ -82,13 +81,12 @@ void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 {
 	Enemies.Remove(DeadEnemy);
 
-	AGameStateTerrorArena* GS = GetWorld()->GetGameState<AGameStateTerrorArena>();
-	if (GS)
+	if (MyGS)
 	{
-		GS->RemainingEnemies = Enemies.Num();
-		GS->OnRep_RemainingEnemies();
+		MyGS->RemainingEnemies = Enemies.Num();
+		MyGS->OnRep_RemainingEnemies();
 		
-		if (GS->RemainingEnemies == 0)
+		if (MyGS->RemainingEnemies == 0)
 		{
 			StartWave();
 			SpawnEnemy();
@@ -99,6 +97,8 @@ void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 
 void ATerror_ArrenaGameMode::OnPlayerDied(AController* PlayerController)
 {
+	FTimerHandle RespawnDelayHandleTimer;
+	
 	FTimerDelegate RespawnDelegate = FTimerDelegate::CreateUObject(this,&ATerror_ArrenaGameMode::RestartPlayer,PlayerController);
 	
 	GetWorld()->GetTimerManager().SetTimer(RespawnDelayHandleTimer,RespawnDelegate,RespawnDelay,false);

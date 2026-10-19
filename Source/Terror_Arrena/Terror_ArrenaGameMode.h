@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "EnemiesBaseClass.h"
+#include "GameStateTerrorArena.h"
 #include "Terror_ArrenaPlayerController.h"
+
 #include "Terror_ArrenaGameMode.generated.h"
 
 /**
@@ -14,13 +16,18 @@
  *  Check the Blueprint derived class for the set valuesw
  */
 UCLASS(abstract)
-class ATerror_ArrenaGameMode : public AGameModeBase
+class ATerror_ArrenaGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	/** Constructor */
 public:
 	
 	virtual void BeginPlay() override;
+	
+	UPROPERTY()
+	TObjectPtr<AGameStateTerrorArena> MyGS;
+	
+	
 	
 	ATerror_ArrenaGameMode();
 	
@@ -30,7 +37,7 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<AEnemiesBaseClass> EnemiesClass;
 	
-	FTimerHandle RespawnDelayHandleTimer;
+	
 	
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerSettings")
 	float RespawnDelay = 3.f;

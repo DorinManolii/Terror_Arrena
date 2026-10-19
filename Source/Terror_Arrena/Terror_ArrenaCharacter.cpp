@@ -76,5 +76,7 @@ void ATerror_ArrenaCharacter::HandleDeath()
 	{
 		
 		GetController()->UnPossess();
+		
+		Destroy();
 	}
 }

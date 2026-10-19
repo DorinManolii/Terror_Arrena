@@ -5,6 +5,8 @@
 
 #include "EnemiesBaseClass.h"
 #include "WeaponComponent.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
 void AAC_TerrorArena_AIController::BeginPlay()
@@ -17,32 +19,44 @@ void AAC_TerrorArena_AIController::BeginPlay()
 
 void AAC_TerrorArena_AIController::StartChasing()
 {
-	APawn* PlayerPawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (PlayerPawn)
+	AGameStateBase* MyGS = GetWorld()->GetGameState();
+	if (MyGS)
 	{
-		APawn* ControlledPawn = GetPawn();
-		if (ControlledPawn)
-		{
-			UWeaponComponent* Weapon = GetPawn()->FindComponentByClass<UWeaponComponent>();
-			if (Weapon)
-			{
-				if (Weapon->WeaponAsset)
-				{
-					float Distance = ControlledPawn->GetDistanceTo(PlayerPawn);
+		APawn* ClosestPawn = nullptr;
+		float ClosestDistance = FLT_MAX;
 
-					if (Distance >= Weapon->WeaponAsset->Range)
-					{
-						MoveToActor(PlayerPawn);
-						EPathFollowingRequestResult::Type Result = MoveToActor(
-							PlayerPawn, Weapon->WeaponAsset->Range - 50.f);
-					}
-					else
-					{
-						Weapon->Fire();
-					}
+		MyGS->PlayerArray;
+		for (int32 i = 0; i < MyGS->PlayerArray.Num(); i++)
+		{
+			APlayerState* PlayerState = MyGS->PlayerArray[i];
+			APawn* PlayerPawn = PlayerState ? PlayerState->GetPawn() : nullptr;
+
+			if (PlayerPawn)
+			{
+				float Distance = PlayerPawn->GetDistanceTo(GetPawn());
+				if (Distance < ClosestDistance)
+				{
+					ClosestDistance = Distance;
+					ClosestPawn = PlayerPawn;
+				}
+			}
+		}
+		UWeaponComponent* Weapon = GetPawn()->FindComponentByClass<UWeaponComponent>();
+		if (Weapon)
+		{
+			if (Weapon->WeaponAsset)
+			{
+				if (ClosestDistance >= Weapon->WeaponAsset->Range)
+				{
+					MoveToActor(ClosestPawn);
+					EPathFollowingRequestResult::Type Result = MoveToActor(
+						ClosestPawn, Weapon->WeaponAsset->Range - 50.f);
+				}
+				else
+				{
+					Weapon->Fire();
 				}
 			}
 		}
 	}
 }
-

@@ -2,6 +2,7 @@
 
 #include "WeaponComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Terror_Arrena.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -41,7 +42,7 @@ void UWeaponComponent::Fire()
 
 				FHitResult Hit;
 
-				GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Camera);
+				GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Bullet);
 				DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1.0f);
 
 				AActor* TargetActor = Hit.GetActor();

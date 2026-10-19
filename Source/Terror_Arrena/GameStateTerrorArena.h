@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameStateBase.h"
+#include "GameFramework/GameState.h"
 #include "GameStateTerrorArena.generated.h"
 
 /**
@@ -17,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaveChanged, int32, NewWave);
 UCLASS()
 
 
-class TERROR_ARRENA_API AGameStateTerrorArena : public AGameStateBase
+class TERROR_ARRENA_API AGameStateTerrorArena : public AGameState
 {
 	GENERATED_BODY()
 	
