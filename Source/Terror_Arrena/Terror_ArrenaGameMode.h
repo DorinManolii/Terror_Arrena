@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "EnemiesBaseClass.h"
+#include "Terror_ArrenaPlayerController.h"
 #include "Terror_ArrenaGameMode.generated.h"
 
 /**
@@ -29,6 +30,12 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<AEnemiesBaseClass> EnemiesClass;
 	
+	FTimerHandle RespawnDelayHandleTimer;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerSettings")
+	float RespawnDelay = 3.f;
+	
+	
 	void StartWave();
 	
 	void SpawnEnemy();
@@ -37,6 +44,8 @@ public:
 	TArray<AEnemiesBaseClass*> Enemies;
 	
 	void OnEnemyDied(AEnemiesBaseClass* DeadEnemy);
+	
+	void OnPlayerDied(AController* PlayerController);
 	
 	
 };

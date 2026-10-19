@@ -3,6 +3,7 @@
 #include "Terror_ArrenaCharacter.h"
 
 #include "HealthComponent.h"
+#include "Terror_ArrenaGameMode.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -62,6 +63,18 @@ void ATerror_ArrenaCharacter::BeginPlay()
 
 void ATerror_ArrenaCharacter::HandleDeath()
 {
-	GetController()->UnPossess();
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Player Death"));
+	ATerror_ArrenaGameMode* GM = Cast<ATerror_ArrenaGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM)
+	{
+		ATerror_ArrenaPlayerController* MyPlayerController = Cast<ATerror_ArrenaPlayerController>(GetController());
+		if (MyPlayerController)
+		{
+			GM->OnPlayerDied(MyPlayerController);
+		}
+	}
+	if (GetController())
+	{
+		
+		GetController()->UnPossess();
+	}
 }

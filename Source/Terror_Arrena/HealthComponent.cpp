@@ -33,9 +33,11 @@ void UHealthComponent::BeginPlay()
 void UHealthComponent::HandleDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
                                     AController* InstigatedBy, AActor* DamageCauser)
 {
+	if (Health <= 0)
+		return;
 	Health = Health - Damage;
 	OnRep_Health();
-	
+
 	if (Health <= 0.0f)
 	{
 		OnDeath.Broadcast();

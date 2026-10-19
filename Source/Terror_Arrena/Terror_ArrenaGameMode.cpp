@@ -96,3 +96,16 @@ void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 		}
 	}
 }
+
+void ATerror_ArrenaGameMode::OnPlayerDied(AController* PlayerController)
+{
+	FTimerDelegate RespawnDelegate = FTimerDelegate::CreateUObject(this,&ATerror_ArrenaGameMode::RestartPlayer,PlayerController);
+	
+	GetWorld()->GetTimerManager().SetTimer(RespawnDelayHandleTimer,RespawnDelegate,RespawnDelay,false);
+	
+}
+
+
+
+
+
