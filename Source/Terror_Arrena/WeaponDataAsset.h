@@ -25,5 +25,7 @@ class TERROR_ARRENA_API UWeaponDataAsset : public UPrimaryDataAsset
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Weapon")
 	float FireRate = 0.0f;
 	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Weapon")
+	bool bFriendlyFire = false;
 };
 

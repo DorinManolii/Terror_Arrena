@@ -25,15 +25,15 @@ void UWeaponComponent::Fire()
 	if (bCanFire)
 	{
 		bCanFire = false;
-		
+
 		APawn* OwnerPawn = Cast<APawn>(GetOwner());
 		if (OwnerPawn)
 		{
 			if (WeaponAsset)
 			{
-						GetWorld()->GetTimerManager().SetTimer(CanFireTimerHandler, this, &UWeaponComponent::CanFire,
-                		                                       WeaponAsset->FireRate, true);
-				
+				GetWorld()->GetTimerManager().SetTimer(CanFireTimerHandler, this, &UWeaponComponent::CanFire,
+				                                       WeaponAsset->FireRate, true);
+
 				FVector ActorLocation = OwnerPawn->GetActorLocation();
 				FVector ActorForwardVector = OwnerPawn->GetActorForwardVector();
 
@@ -49,16 +49,36 @@ void UWeaponComponent::Fire()
 
 				if (TargetActor)
 				{
-					UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage, OwnerPawn->GetController(),
-					                              OwnerPawn,
-					                              UDamageType::StaticClass());
+					if (!WeaponAsset->bFriendlyFire)
+					{
+						for (int i = 0; i < TargetActor->Tags.Num(); i++)
+						{
+							if (TargetActor->Tags[i].ToString().StartsWith("Team"))
+							{
+								FName TargetTag = TargetActor->Tags[i];
+
+								if (!GetOwner()->Tags.Contains(TargetTag))
+								{
+									UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
+									                              OwnerPawn->GetController(),
+									                              OwnerPawn,
+									                              UDamageType::StaticClass());
+								}
+							}
+						}
+					}
+					else
+					{
+						UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
+						                              OwnerPawn->GetController(),
+						                              OwnerPawn,
+						                              UDamageType::StaticClass());
+
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("FriendlyFire"));
+					}
 				}
 			}
 		}
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Reloading"));
 	}
 }
 
