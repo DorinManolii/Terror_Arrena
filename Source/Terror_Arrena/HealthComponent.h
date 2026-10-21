@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
@@ -19,6 +20,9 @@ class TERROR_ARRENA_API UHealthComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UHealthComponent();
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FGameplayTag TeamTag;
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health)
 	float Health;

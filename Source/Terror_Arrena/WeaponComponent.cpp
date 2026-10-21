@@ -2,6 +2,7 @@
 
 #include "WeaponComponent.h"
 #include "DrawDebugHelpers.h"
+#include "HealthComponent.h"
 #include "Terror_Arrena.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -49,37 +50,21 @@ void UWeaponComponent::Fire()
 
 				if (TargetActor)
 				{
-					if (!WeaponAsset->bFriendlyFire)
+					UHealthComponent* TargetHealth = TargetActor->FindComponentByClass<UHealthComponent>();
+					if (TargetHealth)
 					{
-						bool bIsTeammate = false;
-						for (int i = 0; i < TargetActor->Tags.Num(); i++)
+						UHealthComponent* OwnerHealth = GetOwner()->FindComponentByClass<UHealthComponent>();
+						if (OwnerHealth)
 						{
-							if (TargetActor->Tags[i].ToString().StartsWith("Team"))
+							if (TargetHealth->TeamTag != OwnerHealth->TeamTag || WeaponAsset->bFriendlyFire)
 							{
-								FName TargetTag = TargetActor->Tags[i];
-
-								if (GetOwner()->Tags.Contains(TargetTag))
-								{
-									bIsTeammate = true;
-									break;
-								}
+								UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
+								                              OwnerPawn->GetController(),
+								                              OwnerPawn,
+								                              UDamageType::StaticClass());
+								GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("True"));
 							}
 						}
-						if (!bIsTeammate)
-						{
-							UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
-							                              OwnerPawn->GetController(),
-							                              OwnerPawn,
-							                              UDamageType::StaticClass());
-						}
-					}
-
-					else
-					{
-						UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
-						                              OwnerPawn->GetController(),
-						                              OwnerPawn,
-						                              UDamageType::StaticClass());
 					}
 				}
 			}

@@ -16,6 +16,7 @@ public class Terror_Arrena : ModuleRules
 			"EnhancedInput",
 			"AIModule",
 			"NavigationSystem",
+			"GameplayTags",
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"Niagara",
