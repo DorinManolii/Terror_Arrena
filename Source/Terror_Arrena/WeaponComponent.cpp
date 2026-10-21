@@ -51,30 +51,35 @@ void UWeaponComponent::Fire()
 				{
 					if (!WeaponAsset->bFriendlyFire)
 					{
+						bool bIsTeammate = false;
 						for (int i = 0; i < TargetActor->Tags.Num(); i++)
 						{
 							if (TargetActor->Tags[i].ToString().StartsWith("Team"))
 							{
 								FName TargetTag = TargetActor->Tags[i];
 
-								if (!GetOwner()->Tags.Contains(TargetTag))
+								if (GetOwner()->Tags.Contains(TargetTag))
 								{
-									UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
-									                              OwnerPawn->GetController(),
-									                              OwnerPawn,
-									                              UDamageType::StaticClass());
+									bIsTeammate = true;
+									break;
 								}
 							}
 						}
+						if (!bIsTeammate)
+						{
+							UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
+							                              OwnerPawn->GetController(),
+							                              OwnerPawn,
+							                              UDamageType::StaticClass());
+						}
 					}
+
 					else
 					{
 						UGameplayStatics::ApplyDamage(TargetActor, WeaponAsset->Damage,
 						                              OwnerPawn->GetController(),
 						                              OwnerPawn,
 						                              UDamageType::StaticClass());
-
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("FriendlyFire"));
 					}
 				}
 			}
