@@ -62,7 +62,7 @@ void UWeaponComponent::Fire()
 								                              OwnerPawn->GetController(),
 								                              OwnerPawn,
 								                              UDamageType::StaticClass());
-								GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("True"));
+							
 							}
 						}
 					}

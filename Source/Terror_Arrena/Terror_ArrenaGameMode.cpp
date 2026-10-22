@@ -9,25 +9,66 @@ ATerror_ArrenaGameMode::ATerror_ArrenaGameMode()
 {
 }
 
+void ATerror_ArrenaGameMode::HandleMatchHasStarted()
+{
+	Super::HandleMatchHasStarted();
+	
+	if (MyGS)
+	{
+		MyGS->RemainingEnemies = EnemiesPerWave;
+		MyGS->OnRep_RemainingEnemies();
+		StartWave();
+		SpawnEnemy();
+	}
+	
+	
+}
+
+void ATerror_ArrenaGameMode::HandleMatchHasEnded()
+{
+	Super::HandleMatchHasEnded();
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("game over"));
+}
+
 void ATerror_ArrenaGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	MyGS = GetGameState<AGameStateTerrorArena>();
 	
-	StartWave();
-	
-	if (MyGS)
-	{
-		MyGS->RemainingEnemies = EnemiesPerWave;
-		MyGS->OnRep_RemainingEnemies();
-	}
-	SpawnEnemy();
-	
 }
+
+
+bool ATerror_ArrenaGameMode::ReadyToStartMatch_Implementation()
+{
+	int32 CurrentPlayers = GetNumPlayers();
+	
+	if (CurrentPlayers >= MinPlayers)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameReady"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NotEnoughPlayersToStartMatch"));
+		return false;
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("CurrentPlayers: %d"), CurrentPlayers);
+	
+	return Super::ReadyToStartMatch_Implementation();
+}
+
+
 
 void ATerror_ArrenaGameMode::StartWave()
 {
+	for (int i = 0; i < DeadPlayers.Num(); ++i)
+	{
+	RestartPlayer(DeadPlayers[i]);
+	}
+	DeadPlayers.Empty();
+	
 	if (MyGS)
 	{
 		MyGS->CurrentWave++;
@@ -97,12 +138,19 @@ void ATerror_ArrenaGameMode::OnEnemyDied(AEnemiesBaseClass* DeadEnemy)
 
 void ATerror_ArrenaGameMode::OnPlayerDied(AController* PlayerController)
 {
-	FTimerHandle RespawnDelayHandleTimer;
 	
-	FTimerDelegate RespawnDelegate = FTimerDelegate::CreateUObject(this,&ATerror_ArrenaGameMode::RestartPlayer,PlayerController);
+	DeadPlayers.Add(PlayerController);
 	
-	GetWorld()->GetTimerManager().SetTimer(RespawnDelayHandleTimer,RespawnDelegate,RespawnDelay,false);
+	if (DeadPlayers.Num() >= GetNumPlayers())
+	{
+		EndMatch();
+	}
 	
+	//FTimerHandle RespawnDelayHandleTimer;
+	
+	//FTimerDelegate RespawnDelegate = FTimerDelegate::CreateUObject(this,&ATerror_ArrenaGameMode::RestartPlayer,PlayerController);
+	
+	//GetWorld()->GetTimerManager().SetTimer(RespawnDelayHandleTimer,RespawnDelegate,RespawnDelay,false);
 }
 
 

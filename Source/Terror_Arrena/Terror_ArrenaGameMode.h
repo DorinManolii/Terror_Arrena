@@ -37,8 +37,14 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<AEnemiesBaseClass> EnemiesClass;
 	
+	UPROPERTY(EditDefaultsOnly)
+	int32 MinPlayers = 2;
 	
+	virtual bool ReadyToStartMatch_Implementation() override;
 	
+	virtual void HandleMatchHasStarted() override;
+	
+	virtual void HandleMatchHasEnded() override;
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerSettings")
 	float RespawnDelay = 3.f;
 	
@@ -49,6 +55,9 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TArray<AEnemiesBaseClass*> Enemies;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<AController>> DeadPlayers;
 	
 	void OnEnemyDied(AEnemiesBaseClass* DeadEnemy);
 	
