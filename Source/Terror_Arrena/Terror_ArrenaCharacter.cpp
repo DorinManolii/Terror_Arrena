@@ -53,7 +53,7 @@ ATerror_ArrenaCharacter::ATerror_ArrenaCharacter()
 void ATerror_ArrenaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	UHealthComponent* HealthComp = FindComponentByClass<UHealthComponent>();
 	if (HealthComp)
 	{

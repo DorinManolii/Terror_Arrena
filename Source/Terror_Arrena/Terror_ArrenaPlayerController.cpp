@@ -22,7 +22,6 @@
 void ATerror_ArrenaPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
 	if (IsLocalPlayerController())
 	{
 		CreateMainWidget();
@@ -42,6 +41,13 @@ ATerror_ArrenaPlayerController::ATerror_ArrenaPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+}
+
+
+void ATerror_ArrenaPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	OnSpawnPawn.Broadcast(InPawn);
 }
 
 void ATerror_ArrenaPlayerController::SetupInputComponent()
@@ -216,3 +222,4 @@ void ATerror_ArrenaPlayerController::ServerFire_Implementation()
 			Weapon->Fire();
 	}
 }
+

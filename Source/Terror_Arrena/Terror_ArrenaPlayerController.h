@@ -13,7 +13,7 @@ class UInputAction;
 class UPathFollowingComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpawnPawn,APawn*,PlayerPawn);
 /**
  *  Player controller for a top-down perspective game.
  *  Implements point and click based controls
@@ -76,7 +76,8 @@ public:
 	/** Constructor */
 	ATerror_ArrenaPlayerController();
 	
-	
+	UPROPERTY(BlueprintAssignable)
+	FOnSpawnPawn OnSpawnPawn;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite);
 	TSubclassOf<UUserWidget> MainWidgetClass;
@@ -85,7 +86,8 @@ public:
 	
 	UFUNCTION(Server, Reliable)
 	void ServerFire();
-
+	
+	virtual void SetPawn(APawn* InPawn) override;
 protected:
 
 	/** Initialize input bindings */

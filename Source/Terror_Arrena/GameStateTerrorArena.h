@@ -12,7 +12,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRemainingEnemiesChanged, int32, NewCount);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaveChanged, int32, NewWave);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameEnded);
 
 UCLASS()
 
@@ -31,11 +31,16 @@ class TERROR_ARRENA_API AGameStateTerrorArena : public AGameState
 	UPROPERTY(BlueprintAssignable)
 	FOnWaveChanged OnWaveChanged;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnGameEnded OnGameEnded;
+	
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing=OnRep_WaveChanged)
 	int32 CurrentWave = 0;
 	
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing=OnRep_RemainingEnemies)
 	int32 RemainingEnemies = 0;
+	
+	virtual void OnRep_MatchState() override;
 	
 	UFUNCTION()
 	void OnRep_RemainingEnemies();

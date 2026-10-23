@@ -2,25 +2,38 @@
 
 
 #include "GameStateTerrorArena.h"
+
+#include "Terror_ArrenaPlayerController.h"
+#include "GameFramework/GameMode.h"
 #include "Net/UnrealNetwork.h"
 
 
 void AGameStateTerrorArena::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME(AGameStateTerrorArena, CurrentWave);
 	DOREPLIFETIME(AGameStateTerrorArena, RemainingEnemies);
 }
 
+
+void AGameStateTerrorArena::OnRep_MatchState()
+{
+	Super::OnRep_MatchState();
+
+	if (MatchState == MatchState::WaitingPostMatch)
+	{
+		OnGameEnded.Broadcast();
+	}
+}
+
+
 void AGameStateTerrorArena::OnRep_RemainingEnemies()
 {
 	OnRemainingEnemiesChanged.Broadcast(RemainingEnemies);
-	
 }
 
 void AGameStateTerrorArena::OnRep_WaveChanged()
 {
 	OnWaveChanged.Broadcast(CurrentWave);
 }
-	
