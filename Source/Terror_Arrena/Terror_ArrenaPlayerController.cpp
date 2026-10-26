@@ -13,6 +13,7 @@
 #include "Navigation/PathFollowingComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "HealthComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "Terror_Arrena.h"
 #include "Terror_ArrenaGameMode.h"
@@ -43,6 +44,17 @@ ATerror_ArrenaPlayerController::ATerror_ArrenaPlayerController()
 	FollowTime = 0.f;
 }
 
+
+void ATerror_ArrenaPlayerController::ServerAddHeal_Implementation(float Amount)
+{
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn)
+	{
+		UHealthComponent* HealthComponent = ControlledPawn->FindComponentByClass<UHealthComponent>();
+		if (HealthComponent)
+			HealthComponent->AddHealth(Amount);
+	}
+}
 
 void ATerror_ArrenaPlayerController::SetPawn(APawn* InPawn)
 {
@@ -81,6 +93,8 @@ void ATerror_ArrenaPlayerController::SetupInputComponent()
 			                                   &ATerror_ArrenaPlayerController::OnFire);
 			EnhancedInputComponent->BindAction(ActionButton, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnActionButton);
+			EnhancedInputComponent->BindAction(SecondActionButton, ETriggerEvent::Started, this,
+										   &ATerror_ArrenaPlayerController::OnSecondActionButton);
 			// Setup touch input events
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnInputStarted);
@@ -200,6 +214,11 @@ void ATerror_ArrenaPlayerController::OnActionButton()
 			}
 		}
 	}
+}
+
+void ATerror_ArrenaPlayerController::OnSecondActionButton()
+{
+ServerAddHeal(25.f);
 }
 
 void ATerror_ArrenaPlayerController::CreateMainWidget()

@@ -35,7 +35,10 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly);
 	float MaxHealth = 100.0f;
-
+	
+	UFUNCTION()
+	void AddHealth(float NewHealth);
+	
 	UFUNCTION()
 	void HandleDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
 	                  AActor* DamageCauser);
@@ -43,6 +46,9 @@ public:
 	UFUNCTION()
 	void OnRep_Health();
 	
+	bool IsPlayerDied () const;
+	
+	bool IsHealthFull() const;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

@@ -57,6 +57,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	TObjectPtr<UInputAction> ActionButton;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<UInputAction> SecondActionButton;
+	
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
@@ -87,6 +90,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerFire();
 	
+	UFUNCTION(Server, Reliable)
+	void ServerAddHeal(float Amount);
+	
 	virtual void SetPawn(APawn* InPawn) override;
 protected:
 
@@ -101,6 +107,7 @@ protected:
 	void OnTouchReleased();
 	void OnFire();
 	void OnActionButton();
+	void OnSecondActionButton();
 
 	/** Helper function to get the move destination */
 	void UpdateCachedDestination();

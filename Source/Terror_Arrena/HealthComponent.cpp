@@ -19,6 +19,8 @@ UHealthComponent::UHealthComponent()
 	SetIsReplicatedByDefault(true);
 }
 
+
+
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {
@@ -30,12 +32,21 @@ void UHealthComponent::BeginPlay()
 }
 
 
+void UHealthComponent::AddHealth(float NewHealth)
+{
+	if (Health <= 0)
+		return;
+	Health = FMath::Clamp(Health + NewHealth, 0.0f, MaxHealth);
+	OnRep_Health();
+}
+
+
 void UHealthComponent::HandleDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
                                     AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (Health <= 0)
 		return;
-	Health = Health - Damage;
+	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	OnRep_Health();
 
 	if (Health <= 0.0f)
@@ -47,4 +58,14 @@ void UHealthComponent::HandleDamage(AActor* DamagedActor, float Damage, const UD
 void UHealthComponent::OnRep_Health()
 {
 	OnHealthChanged.Broadcast(Health);
+}
+
+bool UHealthComponent::IsPlayerDied() const
+{
+	return Health <= 0.0f;
+}
+
+bool UHealthComponent::IsHealthFull() const
+{
+	return Health >= MaxHealth;
 }
