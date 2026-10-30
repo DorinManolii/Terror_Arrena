@@ -32,9 +32,10 @@ void AEnemiesBaseClass::BeginPlay()
 void AEnemiesBaseClass::Die()
 {
 	ATerror_ArrenaGameMode* MyGm = Cast<ATerror_ArrenaGameMode>(GetWorld()->GetAuthGameMode());
-
-	MyGm->OnEnemyDied(this);
-
+	if(MyGm)
+	{
+		MyGm->OnEnemyDied(this);
+	}
 	Destroy();
 }
 

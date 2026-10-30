@@ -31,10 +31,5 @@ void APickUpHealth::ApplyPickUp(AActor* Picker)
 	{
 		if (!HealthComponent->IsHealthFull())
 			HealthComponent->AddHealth(HealthAmount);
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-			                                 FString::Printf(TEXT("Health: %s , %f"), *Picker->GetName(),HealthAmount));
-		}
 	}
 }

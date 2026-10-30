@@ -46,6 +46,7 @@ void UHealthComponent::HandleDamage(AActor* DamagedActor, float Damage, const UD
 {
 	if (Health <= 0)
 		return;
+	
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	OnRep_Health();
 

@@ -25,6 +25,8 @@ public:
 
 	virtual void ApplyPickUp(AActor* Picker) {};
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
+	float RespawnTimer = 0.f;
 
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

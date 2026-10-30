@@ -27,5 +27,14 @@ class TERROR_ARRENA_API UWeaponDataAsset : public UPrimaryDataAsset
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Weapon")
 	bool bFriendlyFire = false;
+	
+	//Bullets that Weapon can have before reloading
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category= "Weapon")
+	int32 MaxAmmo = 0;
+	
+	//Maximum Ammo that this weapon can have
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category= "Weapon")
+	int32 MaxCargoAmmo = 0;
+	
 };
 

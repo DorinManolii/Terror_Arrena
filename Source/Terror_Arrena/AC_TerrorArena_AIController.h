@@ -20,9 +20,13 @@ class TERROR_ARRENA_API AAC_TerrorArena_AIController : public AAIController
 	
 	FTimerHandle CanFireTimerHandle;
 	
+	FTimerHandle TimerHandle;
+	
 	void StartChasing();
 	
 	virtual void OnPossess(APawn* InPawn) override;
+	
+	virtual void OnUnPossess() override;
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere , Category = "Weapon")
 	TObjectPtr<UWeaponComponent> WeaponComponentRef; 

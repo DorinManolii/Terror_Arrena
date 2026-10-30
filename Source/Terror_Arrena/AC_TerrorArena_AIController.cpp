@@ -12,9 +12,8 @@
 void AAC_TerrorArena_AIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	FTimerHandle TimerHandle;
+	
+	
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AAC_TerrorArena_AIController::StartChasing, 0.5, true);
 }
 
@@ -27,6 +26,12 @@ void AAC_TerrorArena_AIController::OnPossess(APawn* InPawn)
 	}
 }
 
+void AAC_TerrorArena_AIController::OnUnPossess()
+{
+	Super::OnUnPossess();
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+}
+
 void AAC_TerrorArena_AIController::StartChasing()
 {
 	AGameStateBase* MyGS = GetWorld()->GetGameState();
@@ -34,8 +39,7 @@ void AAC_TerrorArena_AIController::StartChasing()
 	{
 		APawn* ClosestPawn = nullptr;
 		float ClosestDistance = FLT_MAX;
-
-		MyGS->PlayerArray;
+		
 		for (int32 i = 0; i < MyGS->PlayerArray.Num(); i++)
 		{
 			APlayerState* PlayerState = MyGS->PlayerArray[i];
@@ -51,15 +55,14 @@ void AAC_TerrorArena_AIController::StartChasing()
 				}
 			}
 		}
+		if (ClosestPawn == nullptr) return;
 		if (WeaponComponentRef)
 		{
 			if (WeaponComponentRef->WeaponAsset)
 			{
 				if (ClosestDistance >= WeaponComponentRef->WeaponAsset->Range)
 				{
-					MoveToActor(ClosestPawn);
-					EPathFollowingRequestResult::Type Result = MoveToActor(
-						ClosestPawn, WeaponComponentRef->WeaponAsset->Range - 50.f);
+					MoveToActor(ClosestPawn, WeaponComponentRef->WeaponAsset->Range - 50.f);
 				}
 				else
 				{

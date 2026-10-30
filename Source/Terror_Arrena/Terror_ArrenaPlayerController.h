@@ -14,6 +14,7 @@ class UPathFollowingComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpawnPawn,APawn*,PlayerPawn);
+
 /**
  *  Player controller for a top-down perspective game.
  *  Implements point and click based controls
@@ -60,6 +61,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	TObjectPtr<UInputAction> SecondActionButton;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<UInputAction> Reloading;
+	
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
@@ -91,6 +95,9 @@ public:
 	void ServerFire();
 	
 	UFUNCTION(Server, Reliable)
+	void ServerReloading();
+	
+	UFUNCTION(Server, Reliable)
 	void ServerAddHeal(float Amount);
 	
 	virtual void SetPawn(APawn* InPawn) override;
@@ -108,6 +115,7 @@ protected:
 	void OnFire();
 	void OnActionButton();
 	void OnSecondActionButton();
+	void OnReloading();
 
 	/** Helper function to get the move destination */
 	void UpdateCachedDestination();

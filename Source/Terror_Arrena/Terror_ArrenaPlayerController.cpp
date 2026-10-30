@@ -95,6 +95,8 @@ void ATerror_ArrenaPlayerController::SetupInputComponent()
 			                                   &ATerror_ArrenaPlayerController::OnActionButton);
 			EnhancedInputComponent->BindAction(SecondActionButton, ETriggerEvent::Started, this,
 										   &ATerror_ArrenaPlayerController::OnSecondActionButton);
+			EnhancedInputComponent->BindAction(Reloading, ETriggerEvent::Started, this,
+										   &ATerror_ArrenaPlayerController::OnReloading);
 			// Setup touch input events
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnInputStarted);
@@ -221,6 +223,12 @@ void ATerror_ArrenaPlayerController::OnSecondActionButton()
 ServerAddHeal(25.f);
 }
 
+void ATerror_ArrenaPlayerController::OnReloading()
+{
+	ServerReloading();
+
+}
+
 void ATerror_ArrenaPlayerController::CreateMainWidget()
 {
 	UUserWidget* MainWidget = CreateWidget<UUserWidget>(this, MainWidgetClass);
@@ -228,6 +236,19 @@ void ATerror_ArrenaPlayerController::CreateMainWidget()
 	if (MainWidget)
 	{
 		MainWidget->AddToViewport();
+	}
+}
+
+void ATerror_ArrenaPlayerController::ServerReloading_Implementation()
+{
+	if (GetPawn())
+	{
+		UWeaponComponent* WeaponComponent = GetPawn()->FindComponentByClass<UWeaponComponent>();
+		if (WeaponComponent)
+		{
+			WeaponComponent->Reload();
+			
+		}
 	}
 }
 
