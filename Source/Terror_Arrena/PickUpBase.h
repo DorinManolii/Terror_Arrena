@@ -11,6 +11,9 @@ UCLASS(Abstract)
 class TERROR_ARRENA_API APickUpBase : public AActor
 {
 	GENERATED_BODY()
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 public:
 	// Sets default values for this actor's properties
 	APickUpBase();
@@ -27,7 +30,20 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
 	float RespawnTimer = 0.f;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,ReplicatedUsing= OnRep_IsActive)
+	bool bIsHidden = false;
+	
+	UFUNCTION()
+	void OnRep_IsActive();
+	
+	FTimerHandle OnActorHidden;
+	
+	bool ShouldBeRespawned = true;
 
+	void SetVisibility();
+	
+	
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                     int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

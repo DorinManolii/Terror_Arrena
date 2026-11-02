@@ -2,7 +2,7 @@
 
 
 #include "PickUpAmunition.h"
-
+#include "WeaponDataAsset.h"
 #include "HealthComponent.h"
 #include "Terror_ArrenaCharacter.h"
 #include "WeaponComponent.h"
@@ -22,7 +22,9 @@ bool APickUpAmunition::CanPickUp(AActor* Picker) const
 				{
 					if (WeaponComponent->WeaponAsset->MaxCargoAmmo > WeaponComponent->ReserveAmmo)
 					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("CanPick"));
 						return true;
+						
 					}
 				}
 			}
@@ -39,10 +41,7 @@ void APickUpAmunition::ApplyPickUp(AActor* Picker)
 		UWeaponComponent* WeaponComponent = PlayerCharacter->FindComponentByClass<UWeaponComponent>();
 		if (WeaponComponent && WeaponComponent->WeaponAsset)
 		{
-			if (WeaponComponent->WeaponAsset->MaxCargoAmmo >= WeaponComponent->ReserveAmmo)
-			{
 			WeaponComponent->AddBullets(BulletsAmount);
-			}
 		}
 	}
 }

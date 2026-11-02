@@ -2,6 +2,7 @@
 
 #include "Terror_ArrenaGameMode.h"
 #include "NavigationSystem.h"
+#include "EnemiesBaseClass.h"
 #include "GameStateTerrorArena.h"
 
 
@@ -102,8 +103,6 @@ void ATerror_ArrenaGameMode::SpawnEnemy()
 					SpawnLocation.Z = 200.f;
 
 					FRotator SpawnRotation = FRotator::ZeroRotator;
-
-
 					FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
 
 					AEnemiesBaseClass* SpawnedEnemy = GetWorld()->SpawnActor<AEnemiesBaseClass>(

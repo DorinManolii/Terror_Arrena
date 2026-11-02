@@ -4,7 +4,10 @@
 #include "DrawDebugHelpers.h"
 #include "HealthComponent.h"
 #include "Terror_Arrena.h"
+#include "PickUpAmunition.h"
 #include "Kismet/GameplayStatics.h"
+#include "WeaponDataAsset.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -15,6 +18,25 @@ UWeaponComponent::UWeaponComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	SetIsReplicatedByDefault(true);
+}
+
+// Called when the game starts
+void UWeaponComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (GetOwner()->HasAuthority())
+	{
+		UHealthComponent* HealthComp = GetOwner()->FindComponentByClass<UHealthComponent>();
+		if (HealthComp)
+		{
+			HealthComp->OnDeath.AddDynamic(this, &UWeaponComponent::OnOwnerDeath);
+		}
+		if (WeaponAsset)
+		{
+			CurrentBullets = WeaponAsset->MaxAmmo;
+		}
+	}
 }
 
 void UWeaponComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -30,6 +52,22 @@ void UWeaponComponent::OnRep_ReserveAmmo()
 	OnAmmoChanged.Broadcast();
 }
 
+void UWeaponComponent::OnOwnerDeath()
+{
+	if (!PickUpDropClass)return; 
+	if (!UKismetMathLibrary::RandomBoolWithWeight(PickUpDropRate)) return;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	
+	FVector ActorLocation = GetOwner()->GetActorLocation();
+	APickUpAmunition* SpawnedAmunition = GetWorld()->SpawnActor<APickUpAmunition>(
+		PickUpDropClass, ActorLocation, FRotator(0.0f, 0.0f, 0.0f),SpawnParams);
+	
+	if (!SpawnedAmunition)return;
+	SpawnedAmunition->ShouldBeRespawned = false;
+}
+
 void UWeaponComponent::OnRep_CurrentBullets()
 {
 	OnAmmoChanged.Broadcast();
@@ -39,7 +77,7 @@ void UWeaponComponent::Reload()
 {
 	if (!GetOwner()->HasAuthority()) return;
 	if (!WeaponAsset) return;
-	
+
 	if (WeaponAsset->MaxAmmo == CurrentBullets)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Ammo Is full"));
@@ -71,28 +109,14 @@ void UWeaponComponent::Reload()
 void UWeaponComponent::AddBullets(int32 Amount)
 {
 	if (!WeaponAsset)return;
-	
+
 	int32 AddAmount = FMath::Clamp(Amount + ReserveAmmo, 0, WeaponAsset->MaxCargoAmmo);
-	
+
 	ReserveAmmo = AddAmount;
-	
+
 	OnRep_ReserveAmmo();
 }
 
-
-// Called when the game starts
-void UWeaponComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (GetOwner()->HasAuthority())
-	{
-		if (WeaponAsset)
-		{
-			CurrentBullets = WeaponAsset->MaxAmmo;
-		}
-	}
-}
 
 void UWeaponComponent::Fire()
 {

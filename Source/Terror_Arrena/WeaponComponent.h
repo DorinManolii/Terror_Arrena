@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WeaponDataAsset.h"
 #include "Components/ActorComponent.h"
 #include "WeaponComponent.generated.h"
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChanged);
 
+class APickUpAmunition;
+class UWeaponDataAsset;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAmmoChanged);
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TERROR_ARRENA_API UWeaponComponent : public UActorComponent
 {
@@ -39,8 +41,17 @@ public:
 	UPROPERTY(BlueprintReadOnly,VisibleAnywhere,ReplicatedUsing = OnRep_ReserveAmmo)
 	int32 ReserveAmmo = 0;
 	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APickUpAmunition> PickUpDropClass;
+	
+	UPROPERTY(EditAnywhere,meta=(ClampMin = 0,ClampMax = 1))
+	float PickUpDropRate = 0.0f;
+	
 	UFUNCTION()
 	void OnRep_ReserveAmmo();
+	
+	UFUNCTION()
+	void OnOwnerDeath();
 	
 	UFUNCTION()
 	void OnRep_CurrentBullets();

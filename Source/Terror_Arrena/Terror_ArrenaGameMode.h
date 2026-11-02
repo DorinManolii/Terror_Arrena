@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "EnemiesBaseClass.h"
-#include "GameStateTerrorArena.h"
-#include "Terror_ArrenaPlayerController.h"
-
 #include "Terror_ArrenaGameMode.generated.h"
 
+class AGameStateTerrorArena;
+class AEnemiesBaseClass;
 /**
  *  Simple Game Mode for a top-down perspective game
  *  Sets the default gameplay framework classes
@@ -27,8 +25,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<AGameStateTerrorArena> MyGS;
 	
-	
-	
 	ATerror_ArrenaGameMode();
 	
 	UPROPERTY(EditDefaultsOnly)
@@ -45,6 +41,7 @@ public:
 	virtual void HandleMatchHasStarted() override;
 	
 	virtual void HandleMatchHasEnded() override;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerSettings")
 	float RespawnDelay = 3.f;
 	
