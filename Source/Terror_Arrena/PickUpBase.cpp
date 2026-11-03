@@ -3,7 +3,7 @@
 
 #include "PickUpBase.h"
 
-#include "HealthComponent.h"
+#include "Components/SphereComponent.h"
 #include "Net/UnrealNetwork.h"
 
 

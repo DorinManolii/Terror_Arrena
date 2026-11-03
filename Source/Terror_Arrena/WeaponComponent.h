@@ -27,19 +27,22 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAmmoChanged OnAmmoChanged;
 	
-	bool bCanFire = true;
+	[[nodiscard]] int32 GetCurrentBullets() const
+	{
+		return CurrentBullets;
+	}
+
+	[[nodiscard]] int32 GetReserveAmmo() const
+	{
+		return ReserveAmmo;
+	}
 	
-	FTimerHandle CanFireTimerHandler;
+	[[nodiscard]] bool IsReserveFull() const;
+	
 	
 	void Fire();
 	
 	void CanFire();
-	
-	UPROPERTY(BlueprintReadOnly,VisibleAnywhere,ReplicatedUsing = OnRep_CurrentBullets)
-	int32 CurrentBullets = 0;
-	
-	UPROPERTY(BlueprintReadOnly,VisibleAnywhere,ReplicatedUsing = OnRep_ReserveAmmo)
-	int32 ReserveAmmo = 0;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APickUpAmunition> PickUpDropClass;
@@ -64,6 +67,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
-
+	UPROPERTY (BlueprintReadOnly,VisibleAnywhere,ReplicatedUsing = OnRep_CurrentBullets)
+	int32 CurrentBullets = 0;
+	
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere,ReplicatedUsing = OnRep_ReserveAmmo)
+	int32 ReserveAmmo = 0;
 		
+	bool bCanFire = true;
+
+
+
+protected:
+	FTimerHandle CanFireTimerHandler;
 };

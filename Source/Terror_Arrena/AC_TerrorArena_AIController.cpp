@@ -3,11 +3,11 @@
 
 #include "AC_TerrorArena_AIController.h"
 
-#include "EnemiesBaseClass.h"
 #include "WeaponComponent.h"
+#include "WeaponDataAsset.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
+
 
 void AAC_TerrorArena_AIController::BeginPlay()
 {

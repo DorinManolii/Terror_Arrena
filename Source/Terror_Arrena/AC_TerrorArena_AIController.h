@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "WeaponComponent.h"
 #include "AC_TerrorArena_AIController.generated.h"
 
+class UWeaponComponent;
 /**
  * 
  */

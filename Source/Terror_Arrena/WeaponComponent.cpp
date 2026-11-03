@@ -56,9 +56,12 @@ void UWeaponComponent::OnOwnerDeath()
 {
 	if (!PickUpDropClass)return; 
 	if (!UKismetMathLibrary::RandomBoolWithWeight(PickUpDropRate)) return;
+	if (CurrentBullets <= 0)return;
+	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	
 	
 	FVector ActorLocation = GetOwner()->GetActorLocation();
 	APickUpAmunition* SpawnedAmunition = GetWorld()->SpawnActor<APickUpAmunition>(
@@ -66,6 +69,9 @@ void UWeaponComponent::OnOwnerDeath()
 	
 	if (!SpawnedAmunition)return;
 	SpawnedAmunition->ShouldBeRespawned = false;
+	SpawnedAmunition->SetLifeTime();
+	SpawnedAmunition->SetBulletsAmount(CurrentBullets);
+	
 }
 
 void UWeaponComponent::OnRep_CurrentBullets()
@@ -117,6 +123,14 @@ void UWeaponComponent::AddBullets(int32 Amount)
 	OnRep_ReserveAmmo();
 }
 
+
+bool UWeaponComponent::IsReserveFull() const
+{
+	if (!WeaponAsset)return true;
+	if (WeaponAsset->MaxCargoAmmo <= ReserveAmmo) return true;
+	
+	return false;
+}
 
 void UWeaponComponent::Fire()
 {

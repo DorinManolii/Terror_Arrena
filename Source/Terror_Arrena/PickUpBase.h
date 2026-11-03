@@ -2,10 +2,12 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "PickUpBase.generated.h"
+
+class USphereComponent;
 
 UCLASS(Abstract)
 class TERROR_ARRENA_API APickUpBase : public AActor
@@ -23,10 +25,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup")
 	UStaticMeshComponent* Mesh;
-
-	virtual bool CanPickUp(AActor* Picker) const { return true; } ;
-
-	virtual void ApplyPickUp(AActor* Picker) {};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
 	float RespawnTimer = 0.f;
@@ -51,4 +49,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	virtual bool CanPickUp(AActor* Picker) const { return true; } ;
+
+	virtual void ApplyPickUp(AActor* Picker) {};
 };

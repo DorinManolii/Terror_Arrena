@@ -2,7 +2,6 @@
 
 
 #include "PickUpAmunition.h"
-#include "WeaponDataAsset.h"
 #include "HealthComponent.h"
 #include "Terror_ArrenaCharacter.h"
 #include "WeaponComponent.h"
@@ -20,11 +19,9 @@ bool APickUpAmunition::CanPickUp(AActor* Picker) const
 			{
 				if (!HealthComponent->IsPlayerDied())
 				{
-					if (WeaponComponent->WeaponAsset->MaxCargoAmmo > WeaponComponent->ReserveAmmo)
+					if (!WeaponComponent->IsReserveFull())
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("CanPick"));
 						return true;
-						
 					}
 				}
 			}
@@ -44,4 +41,15 @@ void APickUpAmunition::ApplyPickUp(AActor* Picker)
 			WeaponComponent->AddBullets(BulletsAmount);
 		}
 	}
+}
+
+void APickUpAmunition::SetBulletsAmount(int32 NewBulletsAmount)
+{
+	if (NewBulletsAmount <= 0)return;
+	BulletsAmount = NewBulletsAmount;
+}
+
+void APickUpAmunition::SetLifeTime()
+{
+	SetLifeSpan(LifeTime);
 }
