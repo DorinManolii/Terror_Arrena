@@ -5,15 +5,13 @@
 #include "EnemiesBaseClass.h"
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Terror_ArrenaCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "Navigation/PathFollowingComponent.h"
-#include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "HealthComponent.h"
+#include "InteractionComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "Terror_Arrena.h"
 #include "Terror_ArrenaGameMode.h"
@@ -56,6 +54,15 @@ void ATerror_ArrenaPlayerController::ServerAddHeal_Implementation(float Amount)
 	}
 }
 
+void ATerror_ArrenaPlayerController::ServerInteract_Implementation()
+{
+	
+	UInteractionComponent* InteractionComponent = GetPawn()->FindComponentByClass<UInteractionComponent>();
+	if (!InteractionComponent) return;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact"));
+	InteractionComponent->TryInteract();
+}
+
 void ATerror_ArrenaPlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
@@ -94,9 +101,11 @@ void ATerror_ArrenaPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(ActionButton, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnActionButton);
 			EnhancedInputComponent->BindAction(SecondActionButton, ETriggerEvent::Started, this,
-										   &ATerror_ArrenaPlayerController::OnSecondActionButton);
+			                                   &ATerror_ArrenaPlayerController::OnSecondActionButton);
 			EnhancedInputComponent->BindAction(Reloading, ETriggerEvent::Started, this,
-										   &ATerror_ArrenaPlayerController::OnReloading);
+			                                   &ATerror_ArrenaPlayerController::OnReloading);
+			EnhancedInputComponent->BindAction(Interact, ETriggerEvent::Started, this,
+			                                   &ATerror_ArrenaPlayerController::OnInteract);
 			// Setup touch input events
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this,
 			                                   &ATerror_ArrenaPlayerController::OnInputStarted);
@@ -207,7 +216,7 @@ void ATerror_ArrenaPlayerController::OnActionButton()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Gm ready"));
 		int32 EnemiesAmount = MyGM->Enemies.Num();
 
-		for (int32 i = EnemiesAmount - 1; i >= 0 ; i--)
+		for (int32 i = EnemiesAmount - 1; i >= 0; i--)
 		{
 			AEnemiesBaseClass* Enemy = MyGM->Enemies[i];
 			if (Enemy)
@@ -220,13 +229,18 @@ void ATerror_ArrenaPlayerController::OnActionButton()
 
 void ATerror_ArrenaPlayerController::OnSecondActionButton()
 {
-ServerAddHeal(25.f);
+	ServerAddHeal(25.f);
 }
 
 void ATerror_ArrenaPlayerController::OnReloading()
 {
 	ServerReloading();
+}
 
+void ATerror_ArrenaPlayerController::OnInteract()
+{
+	ServerInteract();
+	
 }
 
 void ATerror_ArrenaPlayerController::CreateMainWidget()
@@ -247,7 +261,6 @@ void ATerror_ArrenaPlayerController::ServerReloading_Implementation()
 		if (WeaponComponent)
 		{
 			WeaponComponent->Reload();
-			
 		}
 	}
 }
@@ -262,4 +275,3 @@ void ATerror_ArrenaPlayerController::ServerFire_Implementation()
 			Weapon->Fire();
 	}
 }
-

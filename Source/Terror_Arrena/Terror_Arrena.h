@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #define ECC_Bullet ECC_GameTraceChannel1
+#define ECC_Interaction ECC_GameTraceChannel2
 /** Main log category used across the project */
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTerror_Arrena, Log, All);
