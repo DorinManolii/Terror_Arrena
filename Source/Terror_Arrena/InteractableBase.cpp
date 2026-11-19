@@ -11,6 +11,8 @@ AInteractableBase::AInteractableBase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	
+	bReplicates = true;
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(FName("InteractionCollisionBox"));
 	SetRootComponent(BoxCollision);
@@ -35,6 +37,9 @@ void AInteractableBase::BeginPlay()
 
 void AInteractableBase::Interact_Implementation(AActor* Interactor)
 {
-	if (Interactor == nullptr)return;;
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetName());
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+		                                 FString::Printf(TEXT("Interact:")));
+	}
 }

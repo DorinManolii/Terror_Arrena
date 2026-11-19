@@ -56,10 +56,9 @@ void ATerror_ArrenaPlayerController::ServerAddHeal_Implementation(float Amount)
 
 void ATerror_ArrenaPlayerController::ServerInteract_Implementation()
 {
-	
+	if (!GetPawn())return;
 	UInteractionComponent* InteractionComponent = GetPawn()->FindComponentByClass<UInteractionComponent>();
 	if (!InteractionComponent) return;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Interact"));
 	InteractionComponent->TryInteract();
 }
 
